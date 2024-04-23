@@ -7,7 +7,17 @@
       <el-table-column prop="medicineId" label="商品ID" width="70"></el-table-column>
       <el-table-column prop="picture" label="商品图片" width="150">
         <template #default="scope">
-          <el-image style="width: 100px; height: 100px" :src="scope.row.picture" :fit="fit" />
+          <el-upload
+            class="avatar-uploader"
+            :action="'http://localhost:8081/medicine/uploadPicture'"
+            :show-file-list="false"
+            :data="{ medicineId: scope.row.medicineId }"
+            :on-success="re"
+            name="picture"
+          >
+            <img v-if="scope.row.picture" :src="scope.row.picture" class="avatar" :width="100" :height="100" alt="productsPic">
+            <img v-else-if="nullPic" :src="nullPic" class="avatar" :width="100" :height="100" alt="productsPic">
+          </el-upload>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="商品类型" width="90"></el-table-column>
@@ -84,6 +94,7 @@ export default {
       products: [],
       dialogVisible1: false,
       dialogVisible2: false,
+      nullPic:'https://remote-medical-consultation-platform-database.oss-cn-beijing.aliyuncs.com/a8f7e7970a1f894b30805a316527d60.png',
       updateForm: {
         price: '',
         medicineId:''
@@ -154,23 +165,8 @@ export default {
         console.error('Error adding Product:', error)
       }
     },
-    toAdmin(){
-      this.$router.push('/admin/admin')
-    },
-    toDoctor(){
-      this.$router.push('/admin/doctor')
-    },
-    toNotice(){
-      this.$router.push('/admin/notice')
-    },
-    toPersonal(){
-      this.$router.push('/admin/personal')
-    },
-    toStore(){
-      this.$router.push('/admin/store')
-    },
-    toUser(){
-      this.$router.push('/admin/user')
+    re() {
+      window.location.reload()
     },
   }
 }
