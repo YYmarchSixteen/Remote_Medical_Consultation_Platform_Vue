@@ -1,6 +1,9 @@
 <template>
+
   <div class="header">
-    <doctorHeader></doctorHeader>
+    <doctorHeader>
+
+    </doctorHeader>
   </div>
   <div class="chat-container">
     <div class="user-list">
@@ -24,6 +27,7 @@
         <div id="header" class="chat-header">{{ currentUsername }}<br><br>
           <!-- 写病历和开处方按钮 -->
           <div class="action-buttons">
+            {{test}}
             <el-button type="primary" @click="redirectToMedicalRecord">写病历</el-button>
             <el-button type="success" @click="redirectToPrescription">开处方</el-button>
             <el-button type="primary" @click="handleVideo">开启视频</el-button>
@@ -76,6 +80,7 @@ export default {
   components: { doctorHeader },
   data() {
     return {
+      test:"123",
       userList: [],
       currentUserId: null,
       currentUsername: '',
@@ -86,10 +91,14 @@ export default {
   },
   mounted() {
     this.fetchUserList()
+    document.addEventListener('visibilitychange', this.handleVisiable)
+  },
+  unmounted() {
+    document.removeEventListener('visibilitychange', this.handleVisiable)
   },
   methods: {
     fetchUserList() {
-      axios.get(`http://localhost:8081/chat/doctorChatList?doctorId=13`)
+      axios.get(`http://localhost:8081/chat/doctorChatList?doctorId=1`)
         .then(response => {
           this.userList = response.data.data
           if (this.userList.length > 0) {
@@ -103,7 +112,7 @@ export default {
         })
     },
     fetchChatContent(userId) {
-      axios.get(`http://localhost:8081/chat/all?doctorId=13&userId=${userId}`)
+      axios.get(`http://localhost:8081/chat/all?doctorId=1&userId=${userId}`)
         .then(response => {
           this.currentChat = response.data.data.map(message => {
             const formattedTime = new Date(message.sendTime).toLocaleString()
@@ -133,18 +142,25 @@ export default {
         const message = {
           id: this.currentChat.length + 1,
           message: this.newMessage.trim(),
-          sender: 'doctor', // 将消息标记为医生的发言
+          sender: 'doctor',
           formattedTime: new Date().toLocaleString()
         }
         this.currentChat.push(message)
         this.newMessage = ''
+
+        const params = new URLSearchParams()
+        params.append('doctorId', 1)
+        params.append('userId', this.currentUserId)
+        params.append('message', message.message)
+        console.log('Sending message:', params.toString());
+        axios.post('http://localhost:8081/chat/doctorSend', params)
+          .then(response => {
+            console.log('Message sent successfully:', response.data);
+          })
+          .catch(error => {
+            console.error('Error sending message:', error)
+          })
       }
-    },
-    toPatient() {
-      this.$router.push('/doctor/patient')
-    },
-    toPersonal() {
-      this.$router.push('/doctor/Personal')
     },
     handleClose() {
       this.dialogVisible = false
@@ -153,6 +169,17 @@ export default {
     },
     handleVideo() {
       this.dialogVisible = true
+    },
+    handleVisiable(e) {
+      switch(e.target.visibilityState) {
+        case 'hidden':
+          window.location.reload()
+          break;
+        case 'visible':
+          console.log('处于正常打开')
+          window.location.reload();
+          break;
+      }
     }
   }
 }
@@ -177,10 +204,6 @@ export default {
 
 .user-header {
   padding: 10px;
-}
-
-.user-scrollbar {
-  height: calc(100% - 40px);
 }
 
 .user-menu {

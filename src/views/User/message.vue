@@ -66,6 +66,10 @@ export default {
   },
   mounted() {
     this.fetchDoctorList()
+    document.addEventListener('visibilitychange', this.handleVisiable)
+  },
+  unmounted() {
+    document.removeEventListener('visibilitychange', this.handleVisiable)
   },
   methods: {
     fetchDoctorList() {
@@ -112,8 +116,31 @@ export default {
         }
         this.currentChat.push(message)
         this.newMessage = ''
+        const params = new URLSearchParams()
+        params.append('doctorId', this.currentDoctorId)
+        params.append('userId', 1)
+        params.append('message', message.message)
+        console.log('Sending message:', params.toString());
+        axios.post('http://localhost:8081/chat/userSend', params)
+          .then(response => {
+            console.log('Message sent successfully:', response.data);
+          })
+          .catch(error => {
+            console.error('Error sending message:', error)
+          })
       }
     },
+    handleVisiable(e) {
+      switch(e.target.visibilityState) {
+        case 'hidden':
+          window.location.reload()
+          break;
+        case 'visible':
+          console.log('处于正常打开')
+          window.location.reload();
+          break;
+      }
+    }
   }
 
 }
