@@ -26,7 +26,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="医生详情" :visible="dialogVisible" :model-value="dialogVisible">
+    <el-dialog title="医生详情" :visible="dialogVisible" :model-value="dialogVisible" width="60%">
       <el-table :data="selectedDoctor">
         <el-table-column prop="username" label="姓名" width="150"></el-table-column>
         <el-table-column prop="telephone" label="联系方式" width="200"></el-table-column>
@@ -119,5 +119,9 @@ export default {
 .container {
   margin: 20px auto;
   max-width: 800px;
+}
+.dialog-footer{
+  text-align: center;
+  margin-top: 3%;
 }
 </style>
