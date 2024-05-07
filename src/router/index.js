@@ -27,6 +27,16 @@ const routes = [{
     children: []
   },
   {
+    path: '/user/register',
+    name: 'userRegister',
+    hidden: true,
+    meta: {
+      name: '用户注册'
+    },
+    component: () => import('../views/Login/register_user.vue'),
+    children: []
+  },
+  {
     path: '/user/myReserve',
     name: 'myReserve',
     hidden: true,
@@ -287,6 +297,16 @@ const routes = [{
       name: '医生病人管理'
     },
     component: () => import('@/views/Doctor/patient.vue')
+  },
+  {
+    path: '/Doctor/register',
+    name: 'DoctorRegister',
+    hidden: true,
+    meta: {
+      name: '医生注册'
+    },
+    component: () => import('../views/Login/register_doctor.vue'),
+    children: []
   },
   {
     path: '/Doctor/personal',

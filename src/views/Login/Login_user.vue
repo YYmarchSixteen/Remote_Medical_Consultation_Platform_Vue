@@ -69,7 +69,7 @@ export default {
   methods: {
     reg() {
       // 跳转到 /reg 页面
-      this.$router.push('/user/reg')
+      this.$router.push('/user/register')
     },
     checkLogin(from) {
       const params = new URLSearchParams()
