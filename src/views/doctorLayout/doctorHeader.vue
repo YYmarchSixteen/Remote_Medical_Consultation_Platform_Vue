@@ -10,6 +10,7 @@
           <el-menu-item index="/Doctor/patient">病人管理</el-menu-item>
           <el-menu-item index="/Doctor/message">我的消息</el-menu-item>
           <el-menu-item index="/Doctor/comment">我的评价</el-menu-item>
+          <el-menu-item index="/Doctor/reserve">我的预约</el-menu-item>
           <el-menu-item index="/Doctor/article">文章管理</el-menu-item>
           <el-menu-item index="/Doctor/personal">个人中心</el-menu-item>
           <el-menu-item index="/">注销</el-menu-item>

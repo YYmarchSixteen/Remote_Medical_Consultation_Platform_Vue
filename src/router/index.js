@@ -299,6 +299,15 @@ const routes = [{
     component: () => import('@/views/Doctor/patient.vue')
   },
   {
+    path: '/Doctor/reserve',
+    name: 'doctorReserve',
+    hidden: true,
+    meta: {
+      name: '医生预约管理'
+    },
+    component: () => import('@/views/Doctor/reserve.vue')
+  },
+  {
     path: '/Doctor/register',
     name: 'DoctorRegister',
     hidden: true,
@@ -392,7 +401,7 @@ const routes = [{
       require: true
     },
     component: () => import('../views/User/News/news3.vue')
-  },
+  }
 
 ]
 
