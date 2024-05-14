@@ -1,4 +1,4 @@
-# hospital
+# Remote_Medical_Consultation_Platform_Vue
 
 ## Project setup
 ```
