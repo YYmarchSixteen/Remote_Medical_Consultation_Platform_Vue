@@ -4,7 +4,7 @@
     <el-button type="primary" @click="showDialog2();addForm=scope.row" size="small">新增商品</el-button>
     <br><br>
     <el-table :data="products" border stripe>
-      <el-table-column prop="medicineId" label="商品ID" width="70"></el-table-column>
+      <el-table-column prop="medicineName" label="商品" width="150"></el-table-column>
       <el-table-column prop="picture" label="商品图片" width="150">
         <template #default="scope">
           <el-upload
@@ -175,6 +175,6 @@ export default {
 <style scoped>
 .container {
   margin: 20px auto;
-  max-width: 1410px;
+  max-width: 1510px;
 }
 </style>
