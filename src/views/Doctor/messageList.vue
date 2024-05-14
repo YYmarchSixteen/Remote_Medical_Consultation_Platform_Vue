@@ -27,7 +27,6 @@
         <div id="header" class="chat-header">{{ currentUsername }}<br><br>
           <!-- 写病历和开处方按钮 -->
           <div class="action-buttons">
-            {{test}}
             <el-button type="primary" @click="redirectToMedicalRecord">写病历</el-button>
             <el-button type="success" @click="redirectToPrescription">开处方</el-button>
             <el-button type="primary" @click="handleVideo">开启视频</el-button>
@@ -243,12 +242,12 @@ export default {
 }
 
 .sent-message {
-  background-color: #f0f0f0;
+  background-color: #e3f2fd;
   text-align: right;
 }
 
 .received-message {
-  background-color: #e3f2fd;
+  background-color: #f0f0f0;
   text-align: left;
 }
 
