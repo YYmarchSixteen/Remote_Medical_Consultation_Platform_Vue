@@ -3,7 +3,7 @@
     <doctorHeader></doctorHeader>
   </div>
   <div class="container">
-    <el-button type="primary" @click="showDialog();" size="small">添加病历</el-button>
+    <el-button type="primary" @click="showDialog();" size="small">添加处方</el-button>
     <br><br>
     <el-table :data="prescriptions" border stripe>
       <el-table-column prop="prescriptionId" label="处方ID"></el-table-column>
@@ -15,7 +15,14 @@
     <el-dialog title="新增处方" v-model="dialogVisible">
       <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="处方药" prop="medicineId">
-          <el-input v-model="addForm.medicineId"></el-input>
+          <el-select v-model="addForm.medicineId" placeholder="请选择药品">
+            <el-option
+              v-for="medicine in medicines"
+              :key="medicine.medicineId"
+              :label="medicine.medicineName"
+              :value="medicine.medicineId">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="数量" prop="count">
           <el-input v-model="addForm.count"></el-input>
@@ -43,6 +50,7 @@ export default {
     return {
       prescriptions: [],
       dialogVisible: false,
+      medicines: [],
       addForm: {
         medicineId: '',
         count: '',
@@ -52,7 +60,9 @@ export default {
   },
   mounted() {
     this.fetchPrescriptions()
+    this.fetchMedicines()
     this.userId = localStorage.getItem('userId')
+    sessionStorage.getItem('doctorId')
   },
   methods: {
     async fetchPrescriptions() {
@@ -72,8 +82,8 @@ export default {
         params.append('medicineId', this.addForm.medicineId)
         params.append('count', this.addForm.count)
         params.append('instruction', this.addForm.instruction)
-        params.append('userId', 1)
-        params.append('doctorId', 1)
+        params.append('userId', localStorage.getItem('userId'))
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         axios.post('http://localhost:8081/prescription/addRx', params)
         this.$message.success('新增成功')
         this.dialogVisible = false
@@ -82,7 +92,15 @@ export default {
       } catch (error) {
         console.error('Error adding prescription:', error)
       }
-    }
+    },
+    async fetchMedicines() {
+      try {
+        const response = await axios.get('http://localhost:8081/medicine/all')
+        this.medicines = response.data.data
+      } catch (error) {
+        console.error('Error fetching medicines:', error)
+      }
+    },
   }
 }
 </script>

@@ -54,10 +54,11 @@ export default {
   },
   mounted() {
     this.fetchCartData()
+    sessionStorage.getItem('userId')
   },
   methods: {
     fetchCartData() {
-      axios.get(`http://localhost:8081/cart/findByUserId?userId=1`)
+      axios.get(`http://localhost:8081/cart/findByUserId?userId=${sessionStorage.getItem('userId')}`)
         .then(response => {
           this.medicine = response.data.data
           console.log(this.medicine)
@@ -83,7 +84,7 @@ export default {
     async pay(item) {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('medicineId', item.medicineId)
         params.append('count', item.count)
         await axios.post('http://localhost:8081/detail/add', params)

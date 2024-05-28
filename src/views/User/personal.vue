@@ -59,11 +59,12 @@ export default {
   },
   mounted() {
     this.fetchDoctor()
+    sessionStorage.getItem('userId')
   },
   methods: {
     async fetchDoctor() {
       try {
-        const response = await axios.get('http://localhost:8081/user/findById?userId=1')
+        const response = await axios.get(`http://localhost:8081/user/findById?userId=${sessionStorage.getItem('userId')}`)
         this.doctor = response.data.data
       } catch (error) {
         console.error('Error fetching doctor:', error)
@@ -74,7 +75,7 @@ export default {
         const params = new URLSearchParams()
         params.append('address', this.doctor.address)
         params.append('telephone', this.doctor.telephone)
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         await axios.put('http://localhost:8081/user/changeInfo', params)
         alert('用户信息已更新')
       } catch (error) {
@@ -88,7 +89,7 @@ export default {
     async uploadPic() {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('picture', this.doctor.picture)
         axios.post('http://localhost:8081/user/uploadPicture', params)
         window.location.reload()

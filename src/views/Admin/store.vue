@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="scrollContainer"  style="max-height: 800px; overflow-y: auto;">
+  <div class="container" ref="scrollContainer" style="max-height: 800px; overflow-y: auto;">
     <h1>商品列表</h1>
     <el-button type="primary" @click="showDialog2();addForm=scope.row" size="small">新增商品</el-button>
     <br><br>
@@ -15,22 +15,27 @@
             :on-success="re"
             name="picture"
           >
-            <img v-if="scope.row.picture" :src="scope.row.picture" class="avatar" :width="100" :height="100" alt="productsPic">
+            <img v-if="scope.row.picture" :src="scope.row.picture" class="avatar" :width="100" :height="100"
+                 alt="productsPic">
             <img v-else-if="nullPic" :src="nullPic" class="avatar" :width="100" :height="100" alt="productsPic">
           </el-upload>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="商品类型" width="90"></el-table-column>
       <el-table-column prop="price" label="价格/元" width="100"></el-table-column>
-      <el-table-column prop="feature" label="功效" width="700"></el-table-column>
+      <el-table-column prop="feature" label="功效" width="500"></el-table-column>
+      <el-table-column prop="count" label="剩余库存" width="100"></el-table-column>
       <el-table-column prop="rx" label="性质" width="100">
         <template v-slot="scope">
           <span v-if="scope.row.rx === 1">处方药</span>
           <span v-else-if="scope.row.rx === 0">非处方药</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="300">
         <template #default="scope">
+          <el-button type="success" size="small" @click="adjustStock(scope.row)">
+            库存调整
+          </el-button>
           <el-button type="danger" size="small" @click="disableProduct(scope.row)">
             删除商品
           </el-button>
@@ -49,7 +54,17 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-dialog title="库存调整" v-model="dialogVisible3">
+      <el-form ref="adjustForm" :model="adjustForm" label-width="100px">
+        <el-form-item label="调整数量" prop="count">
+          <el-input v-model.number="adjustForm.count"></el-input>
+        </el-form-item>
+      </el-form>
+      <span id="footer" class="dialog-footer">
+    <el-button @click="dialogVisible3 = false">取消</el-button>
+    <el-button type="primary" @click="submitAdjustment">确定</el-button>
+  </span>
+    </el-dialog>
     <el-dialog title="新增商品" v-model="dialogVisible2">
       <el-form ref="addForm" :model="addForm" label-width="100px">
         <el-form-item label="商品名" prop="medicineName">
@@ -94,18 +109,24 @@ export default {
       products: [],
       dialogVisible1: false,
       dialogVisible2: false,
-      nullPic:'https://remote-medical-consultation-platform-database.oss-cn-beijing.aliyuncs.com/a8f7e7970a1f894b30805a316527d60.png',
+      nullPic: 'https://remote-medical-consultation-platform-database.oss-cn-beijing.aliyuncs.com/a8f7e7970a1f894b30805a316527d60.png',
       updateForm: {
         price: '',
-        medicineId:''
+        medicineId: ''
       },
       addForm: {
         medicineName: '',
         price: '',
-        feature:'',
-        type:'',
-        rx:''
-      }
+        feature: '',
+        type: '',
+        rx: ''
+      },
+      adjustForm: {
+        count: 0,
+        medicineId: ''
+      },
+      dialogVisible3: false
+
     }
   },
   mounted() {
@@ -130,7 +151,7 @@ export default {
       }
     },
     showDialog1() {
-      this.dialogVisible1 = true;
+      this.dialogVisible1 = true
     },
     showDialog2() {
       this.dialogVisible2 = true
@@ -147,6 +168,23 @@ export default {
         window.location.reload()
       } catch (error) {
         console.error('Error adding Product:', error)
+      }
+    },
+    adjustStock(product) {
+      this.adjustForm.medicineId = product.medicineId
+      this.dialogVisible3 = true
+    },
+    async submitAdjustment() {
+      try {
+        const params = new URLSearchParams()
+        params.append('count', this.adjustForm.count)
+        params.append('medicineId', this.adjustForm.medicineId)
+        await axios.put('http://localhost:8081/medicine/changeCount', params)
+        this.$message.success('库存调整成功')
+        this.dialogVisible3 = false
+        await this.fetchProducts()
+      } catch (error) {
+        console.error('Error adjusting stock:', error)
       }
     },
     async addProduct() {
@@ -167,7 +205,7 @@ export default {
     },
     re() {
       window.location.reload()
-    },
+    }
   }
 }
 </script>

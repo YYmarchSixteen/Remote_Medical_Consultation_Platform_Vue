@@ -73,8 +73,20 @@ export default {
       axios.post(this.BASE_URL + 'admin/login', params)
         .then(res => {
           if (res.data.status === '200') {
-            this.$message.success('登录成功,欢迎回来')
-            this.$router.push('/admin/admin');
+            //console.log(res.data.data.role)
+            if (res.data.data.role === 1) {
+              sessionStorage.setItem('role', res.data.data.role);
+              //console.log(sessionStorage.getItem('role'))
+              this.$message.success('登录成功,欢迎回来')
+              this.$router.push('/admin/superAdmin')
+            } else if (res.data.data.role === 2) {
+              sessionStorage.setItem('role', res.data.data.role);
+              this.$message.success('登录成功,欢迎回来')
+              console.log(res.data.data.role)
+              this.$router.push('/admin/doctor')
+            } else {
+              this.$message.error('未知角色，登录失败')
+            }
           } else {
             this.$message.error('用户名或密码错误，登录失败')
           }
@@ -84,6 +96,7 @@ export default {
           this.$message.error('登录失败，请稍后再试')
         })
     }
+
   }
 }
 </script>

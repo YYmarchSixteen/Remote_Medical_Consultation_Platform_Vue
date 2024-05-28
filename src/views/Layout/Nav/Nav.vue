@@ -2,9 +2,10 @@
   <div id="nav-wrap">
     <div id="xl">
       <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse" @open="handleOpen"
-        @close="handleClose" background-color="transparent" text-color="#333333" active-text-color="#333333" router>
+               @close="handleClose" background-color="transparent" text-color="#333333" active-text-color="#333333"
+               router>
         <template v-for="(item) in router.options.routes">
-          <el-menu-item v-if="!item.hidden" :key="item.path" :index="item.path">
+          <el-menu-item v-if="!item.hidden && !(item.path === '/admin/superAdmin' && role === '2')" :key="item.path" :index="item.path">
             <el-icon>
               <component :is="item.meta.icon" />
             </el-icon>
@@ -25,6 +26,7 @@ export default {
   setup() {
     const router = useRouter()
     const isCollapse = ref(false)
+    const role = sessionStorage.getItem('role')
     const handleOpen = (key, keyPath) => {
       console.log(key, keyPath)
     }
@@ -35,7 +37,8 @@ export default {
       isCollapse,
       handleOpen,
       handleClose,
-      router
+      router,
+      role
     }
   }
 }

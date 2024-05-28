@@ -49,6 +49,7 @@ export default {
   },
   mounted() {
     this.doctorId = localStorage.getItem('doctorId')
+    sessionStorage.getItem('userId')
   },
   methods: {
     fetchComments() {
@@ -75,7 +76,7 @@ export default {
     async addComment() {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('doctorId', localStorage.getItem('doctorId'))
         params.append('content', this.addForm.content)
         axios.post('http://localhost:8081/comment/addComment', params)

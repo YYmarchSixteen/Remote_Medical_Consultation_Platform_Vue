@@ -24,6 +24,7 @@
           <!-- 聊天头部 -->
           <div id="header" class="chat-header">{{ currentUsername }}<br><br>
           </div>
+          <el-button type="primary" @click="apply" v-if="reserveStatus === '2'">申请视频</el-button>
           <el-scrollbar wrap-class="chat-scrollbar" style="height: 80vh">
             <div class="chat-messages">
               <div v-for="message in currentChat" :key="message.id" class="chat-message"
@@ -61,11 +62,15 @@ export default {
       currentUsername: '',
       currentChat: [],
       newMessage: '',
-      cameraDialogVisible: false
+      cameraDialogVisible: false,
+      ReserveList: [],
+      reserveStatus: null
     }
   },
   mounted() {
     this.fetchDoctorList()
+    this.fetchReserveList()
+    sessionStorage.getItem('userId')
     document.addEventListener('visibilitychange', this.handleVisiable)
   },
   unmounted() {
@@ -84,6 +89,21 @@ export default {
         })
         .catch(error => {
           console.error('Error fetching doctor list:', error)
+        })
+    },
+    fetchReserveList() {
+      axios
+        .get(`http://localhost:8081/reserve/myReserve?userId=1`)
+        .then((response) => {
+          this.ReserveList = response.data.data
+          if (this.ReserveList.length > 0) {
+            this.reserveStatus = this.ReserveList[0].status
+          }
+          console.log('ReserveList:', this.ReserveList)
+          console.log('Reserve Status:', this.reserveStatus)
+        })
+        .catch((error) => {
+          console.error('Error fetching Reserve list:', error)
         })
     },
     fetchChatContent(doctorId) {
@@ -118,27 +138,34 @@ export default {
         this.newMessage = ''
         const params = new URLSearchParams()
         params.append('doctorId', this.currentDoctorId)
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('message', message.message)
-        console.log('Sending message:', params.toString());
+        console.log('Sending message:', params.toString())
         axios.post('http://localhost:8081/chat/userSend', params)
           .then(response => {
-            console.log('Message sent successfully:', response.data);
+            console.log('Message sent successfully:', response.data)
           })
           .catch(error => {
             console.error('Error sending message:', error)
           })
       }
     },
+    apply() {
+      const params = new URLSearchParams()
+      params.append('userId', sessionStorage.getItem('userId'))
+      axios.put('http://localhost:8081/reserve/apply', params)
+      alert('申请已发送')
+      window.location.reload()
+    },
     handleVisiable(e) {
-      switch(e.target.visibilityState) {
+      switch (e.target.visibilityState) {
         case 'hidden':
           window.location.reload()
-          break;
+          break
         case 'visible':
           console.log('处于正常打开')
-          window.location.reload();
-          break;
+          window.location.reload()
+          break
       }
     }
   }
@@ -151,6 +178,7 @@ export default {
 .body {
   margin-top: 20px;
 }
+
 .chat-container {
   display: flex;
   height: 100vh;

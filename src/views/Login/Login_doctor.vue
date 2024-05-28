@@ -68,7 +68,6 @@ export default {
   },
   methods: {
     reg() {
-      // 跳转到 /reg 页面
       this.$router.push('/Doctor/register')
     },
     checkLogin(from) {
@@ -78,6 +77,8 @@ export default {
       axios.post(this.BASE_URL + 'doctor/login', params)
         .then(res => {
           if (res.data.status === '200') {
+            sessionStorage.setItem('doctorId', res.data.data.doctorId);
+            //console.log(res.data.data.doctorId)
             this.$message.success('登录成功,欢迎回来')
             this.$router.push('/doctor/patient')
           } else {

@@ -186,16 +186,6 @@ const routes = [{
     component: () => import('../views/Login/Login_admin.vue')
   },
   {
-    path: '/reg',
-    name: 'Reg',
-    hidden: true,
-    meta: {
-      name: '注册'
-    },
-    //按需加载
-    component: () => import('../views/Login/Reg.vue')
-  },
-  {
     path: '/:catchAll(.*)',
     name: '404',
     hidden: true,
@@ -234,16 +224,30 @@ const routes = [{
     ]
   },
   {
-    path: '/admin/admin',
-    name: 'adminAdmin',
-    component: Layout, // 使用布局组件
+    path: '/admin/superAdmin',
+    name: 'adminSuperAdmin',
+    component: Layout,
     meta: {
       name: '管理员管理'
     },
     children: [
       {
         path: '',
-        component: () => import('../views/Admin/admin.vue')
+        component: () => import('../views/Admin/superAdmin.vue')
+      }
+    ]
+  },
+  {
+    path: '/admin/orderReport',
+    name: 'orderReport',
+    component: Layout,
+    meta: {
+      name: '订单报告'
+    },
+    children: [
+      {
+        path: '',
+        component: () => import('../views/Admin/orderReport.vue')
       }
     ]
   },

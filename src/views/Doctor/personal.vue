@@ -62,6 +62,7 @@ export default {
   },
   mounted() {
     this.fetchDoctor()
+    sessionStorage.getItem('doctorId')
   },
   methods: {
     async fetchDoctor() {
@@ -77,7 +78,7 @@ export default {
         const params = new URLSearchParams()
         params.append('introduction', this.doctor.introduction)
         params.append('telephone', this.doctor.telephone)
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         await axios.put('http://localhost:8081/doctor/changeInfo', params)
         alert('用户信息已更新')
       } catch (error) {
@@ -91,7 +92,7 @@ export default {
     async uploadPic() {
       try {
         const params = new URLSearchParams()
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         params.append('picture', this.doctor.picture)
         axios.post('http://localhost:8081/doctor/uploadPicture', params)
         window.location.reload()
@@ -103,7 +104,7 @@ export default {
     async changePassword() {
       try {
         const params = new URLSearchParams()
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         params.append('password', this.doctor.password)
         axios.put('http://localhost:8081/doctor/changePassword', params)
         window.location.reload()

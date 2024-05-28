@@ -72,11 +72,12 @@ export default {
   },
   mounted() {
     this.fetchArticles()
+    sessionStorage.getItem('doctorId')
+    //console.log(sessionStorage.getItem('doctorId'))
   },
   methods: {
     async fetchArticles() {
       try {
-        //
         if (this.loading || this.articles.length >= this.total) {
           return
         }
@@ -119,7 +120,7 @@ export default {
         const params = new URLSearchParams()
         params.append('title', this.addForm.title)
         params.append('content', this.addForm.content)
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         axios.post('http://localhost:8081/article/add', params)
         this.$message.success('新增成功')
         this.dialogVisible1 = false

@@ -32,6 +32,7 @@ export default {
   },
   mounted() {
     this.fetchMedicines();
+    sessionStorage.getItem('userId')
   },
   methods: {
     fetchMedicines() {
@@ -46,7 +47,7 @@ export default {
     async addToCart(medicine) {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('medicineId', medicine.medicineId)
         params.append('count', 1)
         await axios.post('http://localhost:8081/cart/addCart', params)

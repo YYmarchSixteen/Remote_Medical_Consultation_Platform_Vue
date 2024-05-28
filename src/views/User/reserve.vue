@@ -41,11 +41,12 @@ export default {
   mounted() {
     this.generateTableData()
     this.doctorId = this.$route.params.doctorId
+    sessionStorage.getItem('userId')
   },
   methods: {
     reserve(row) {
       const params = new URLSearchParams()
-      params.append('userId', 1)
+      params.append('userId', sessionStorage.getItem('userId'))
       params.append('doctorId', this.doctorId)
       params.append('reserveTime', this.selectedDate)
       params.append('sequence', row.index)

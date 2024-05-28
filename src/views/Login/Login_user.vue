@@ -78,6 +78,7 @@ export default {
       axios.post(this.BASE_URL + 'user/login', params)
         .then(res => {
           if (res.data.status === '200') {
+            sessionStorage.setItem('userId', res.data.data.userId);
             this.$message.success('登录成功,欢迎回来')
             this.$router.push('/user/message')
           } else {

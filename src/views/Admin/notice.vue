@@ -98,7 +98,6 @@ export default {
   methods: {
     async fetchNotices() {
       try {
-        // 如果正在加载数据或已加载完所有数据，则不再请求
         if (this.loading || this.notices.length >= this.total) {
           return
         }

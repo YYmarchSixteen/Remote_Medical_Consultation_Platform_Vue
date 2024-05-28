@@ -1,9 +1,6 @@
 <template>
-
   <div class="header">
-    <doctorHeader>
-
-    </doctorHeader>
+    <doctorHeader></doctorHeader>
   </div>
   <div class="chat-container">
     <div class="user-list">
@@ -11,8 +8,12 @@
         <div id="header" class="user-header">用户列表</div>
         <el-scrollbar wrap-class="user-scrollbar">
           <el-menu class="user-menu" :default-active="currentUserId" mode="vertical">
-            <el-menu-item v-for="user in userList" :key="user.userId" :index="user.userId"
-                          @click="handleUserSelect(user.username)">
+            <el-menu-item
+              v-for="user in userList"
+              :key="user.userId"
+              :index="user.userId"
+              @click="handleUserSelect(user.username)"
+            >
               {{ user.username }}
             </el-menu-item>
           </el-menu>
@@ -24,49 +25,60 @@
     <div class="chat-content">
       <el-card class="chat-card">
         <!-- 聊天头部 -->
-        <div id="header" class="chat-header">{{ currentUsername }}<br><br>
+        <div id="header" class="chat-header">
           <!-- 写病历和开处方按钮 -->
           <div class="action-buttons">
             <el-button type="primary" @click="redirectToMedicalRecord">写病历</el-button>
             <el-button type="success" @click="redirectToPrescription">开处方</el-button>
-            <el-button type="primary" @click="handleVideo">开启视频</el-button>
+            <el-button type="primary" @click="handleVideo" v-if="reserveStatus === '1'">开启视频</el-button>
           </div>
         </div>
         <el-scrollbar wrap-class="chat-scrollbar" style="height: 80vh">
           <div class="chat-messages">
-            <div v-for="message in currentChat" :key="message.id" class="chat-message"
-                 :class="{ 'sent-message': message.sender !== 'user', 'received-message': message.sender === 'user' }">
+            <div
+              v-for="message in currentChat"
+              :key="message.id"
+              class="chat-message"
+              :class="{
+                'sent-message': message.sender !== 'user',
+                'received-message': message.sender === 'user'
+              }"
+            >
               <div v-if="message.sender === 'user'" class="user-message">
-                {{ message.message }}<br>{{ message.formattedTime }}
+                {{ message.message }}<br />{{ message.formattedTime }}
               </div>
               <div v-else class="doctor-message">
-                {{ message.message }}<br>{{ message.formattedTime }}
+                {{ message.message }}<br />{{ message.formattedTime }}
               </div>
             </div>
           </div>
         </el-scrollbar>
         <!-- 输入框 -->
-        <el-input class="chat-input" v-model="newMessage" @keyup.enter="sendMessage" placeholder="请输入消息"
-                  clearable></el-input>
+        <el-input
+          class="chat-input"
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="请输入消息"
+          clearable
+        ></el-input>
       </el-card>
     </div>
   </div>
   <!-- 视频窗口 -->
-  <el-dialog
-    v-model="dialogVisible"
-    width="80%"
-    height="80%"
-    :before-close="handleClose"
-  >
+  <el-dialog v-model="dialogVisible" width="80%" height="80%" :before-close="handleClose">
     <el-divider />
-    <img style="display: block;
-    -webkit-user-select: none;
-    margin: auto;
-    background-color: 
-    hsl(0, 0%, 25%);"
-         src="http://192.168.43.212:81/stream" alt="mediaStreaming">
+    <img
+      style="
+        display: block;
+        -webkit-user-select: none;
+        margin: auto;
+        background-color: hsl(0, 0%, 25%);
+      "
+      src="http://192.168.43.212:81/stream"
+      alt="mediaStreaming"
+    />
     <span id="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="dialogVisible = false">取消</el-button>
     </span>
   </el-dialog>
 </template>
@@ -79,26 +91,31 @@ export default {
   components: { doctorHeader },
   data() {
     return {
-      test:"123",
+      test: '123',
       userList: [],
       currentUserId: null,
       currentUsername: '',
       currentChat: [],
       newMessage: '',
-      dialogVisible: false
+      dialogVisible: false,
+      ReserveList: [],
+      reserveStatus: null
     }
   },
   mounted() {
     this.fetchUserList()
+    this.fetchReserveList()
     document.addEventListener('visibilitychange', this.handleVisiable)
+    sessionStorage.getItem('doctorId')
   },
   unmounted() {
     document.removeEventListener('visibilitychange', this.handleVisiable)
   },
   methods: {
     fetchUserList() {
-      axios.get(`http://localhost:8081/chat/doctorChatList?doctorId=1`)
-        .then(response => {
+      axios
+        .get(`http://localhost:8081/chat/doctorChatList?doctorId=1`)
+        .then((response) => {
           this.userList = response.data.data
           if (this.userList.length > 0) {
             this.currentUsername = this.userList[0].username
@@ -106,25 +123,41 @@ export default {
             this.fetchChatContent(this.currentUserId)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching user list:', error)
         })
     },
+    fetchReserveList() {
+      axios
+        .get(`http://localhost:8081/reserve/myReserve?userId=1`)
+        .then((response) => {
+          this.ReserveList = response.data.data
+          if (this.ReserveList.length > 0) {
+            this.reserveStatus = this.ReserveList[0].status
+          }
+          console.log('ReserveList:', this.ReserveList)
+          console.log('Reserve Status:', this.reserveStatus)
+        })
+        .catch((error) => {
+          console.error('Error fetching Reserve list:', error)
+        })
+    },
     fetchChatContent(userId) {
-      axios.get(`http://localhost:8081/chat/all?doctorId=1&userId=${userId}`)
-        .then(response => {
-          this.currentChat = response.data.data.map(message => {
+      axios
+        .get(`http://localhost:8081/chat/all?doctorId=1&userId=${userId}`)
+        .then((response) => {
+          this.currentChat = response.data.data.map((message) => {
             const formattedTime = new Date(message.sendTime).toLocaleString()
             return { ...message, formattedTime }
           })
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching chat content:', error)
         })
     },
     handleUserSelect(username) {
       this.currentUsername = username
-      const selectedUser = this.userList.find(user => user.username === username)
+      const selectedUser = this.userList.find((user) => user.username === username)
       if (selectedUser) {
         this.currentUserId = selectedUser.userId
         this.fetchChatContent(this.currentUserId)
@@ -146,17 +179,17 @@ export default {
         }
         this.currentChat.push(message)
         this.newMessage = ''
-
         const params = new URLSearchParams()
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         params.append('userId', this.currentUserId)
         params.append('message', message.message)
-        console.log('Sending message:', params.toString());
-        axios.post('http://localhost:8081/chat/doctorSend', params)
-          .then(response => {
-            console.log('Message sent successfully:', response.data);
+        console.log('Sending message:', params.toString())
+        axios
+          .post('http://localhost:8081/chat/doctorSend', params)
+          .then((response) => {
+            console.log('Message sent successfully:', response.data)
           })
-          .catch(error => {
+          .catch((error) => {
             console.error('Error sending message:', error)
           })
       }
@@ -167,17 +200,20 @@ export default {
       video.pause()
     },
     handleVideo() {
+      const params = new URLSearchParams()
+      params.append('userId', 1)
+      axios.put('http://localhost:8081/reserve/agree', params)
       this.dialogVisible = true
     },
     handleVisiable(e) {
-      switch(e.target.visibilityState) {
+      switch (e.target.visibilityState) {
         case 'hidden':
           window.location.reload()
-          break;
+          break
         case 'visible':
           console.log('处于正常打开')
-          window.location.reload();
-          break;
+          window.location.reload()
+          break
       }
     }
   }
@@ -257,5 +293,4 @@ export default {
   border-radius: 5px;
   word-wrap: break-word;
 }
-
 </style>

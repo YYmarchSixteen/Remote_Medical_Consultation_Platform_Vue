@@ -31,15 +31,15 @@ export default {
   },
   mounted() {
     this.loadPrescriptions()
+    sessionStorage.getItem('userId')
   },
   methods: {
     async loadPrescriptions() {
       try {
-        const userId = 1
         const apiUrl = 'http://localhost:8081/prescription/findByUserId'
         const response = await axios.get(apiUrl, {
           params: {
-            userId: userId
+            userId: sessionStorage.getItem('userId')
           }
         })
         this.prescriptions = response.data.data

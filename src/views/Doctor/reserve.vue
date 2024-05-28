@@ -86,6 +86,7 @@ export default {
   },
   mounted() {
     this.fetchDoctors()
+    sessionStorage.getItem('doctorId')
   },
   methods: {
     async fetchDoctors() {
@@ -100,8 +101,8 @@ export default {
       try {
         const params = new URLSearchParams()
         params.append('userId', filteredUsers.userId)
-        params.append('doctorId', 1)
-        params.append('message', '预约正在处理')
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
+        params.append('message', '您好我是您预约的医生，很高兴能与您进行在线问诊。请问您感觉如何？有什么问题或症状需要我帮助解决吗？')
         console.log(filteredUsers.userId)
         await axios.post('http://localhost:8081/chat/doctorSend', params)
         await router.push('/doctor/message')

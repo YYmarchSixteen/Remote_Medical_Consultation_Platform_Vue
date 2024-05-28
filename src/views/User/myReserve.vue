@@ -42,15 +42,15 @@ export default {
   },
   mounted() {
     this.loadAppointments()
+    sessionStorage.getItem('userId')
   },
   methods: {
     async loadAppointments() {
       try {
-        const userId = 1
         const apiUrl = 'http://localhost:8081/reserve/myReserve'
         const response = await axios.get(apiUrl, {
           params: {
-            userId: userId
+            userId: sessionStorage.getItem('userId')
           }
         })
         this.appointments = response.data.data

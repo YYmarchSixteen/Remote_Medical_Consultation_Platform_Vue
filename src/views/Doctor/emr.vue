@@ -64,6 +64,7 @@ export default {
   mounted() {
     this.fetchEMRs()
     this.userId = localStorage.getItem('userId')
+    sessionStorage.getItem('doctorId')
   },
   methods: {
     async fetchEMRs() {
@@ -86,7 +87,7 @@ export default {
         params.append('diagnosis', this.addForm.diagnosis)
         params.append('treatmentPlan', this.addForm.treatmentPlan)
         params.append('userId', this.userId)
-        params.append('doctorId', 1)
+        params.append('doctorId', sessionStorage.getItem('doctorId'))
         axios.post('http://localhost:8081/emr/addEmr', params)
         this.$message.success('新增成功')
         this.dialogVisible = false

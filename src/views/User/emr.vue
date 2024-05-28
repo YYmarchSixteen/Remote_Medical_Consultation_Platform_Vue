@@ -33,11 +33,12 @@ export default {
   },
   mounted() {
     this.loadEmrs()
+    sessionStorage.getItem('userId')
   },
   methods: {
     async loadEmrs() {
       try {
-        const userId = 1
+        const userId = sessionStorage.getItem('userId')
         const apiUrl = 'http://localhost:8081/emr/findByUserId'
         const response = await axios.get(apiUrl, {
           params: {

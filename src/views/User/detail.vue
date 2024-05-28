@@ -19,7 +19,7 @@
                 <span class="color">售价</span>
                 <span class="prices">￥{{ medicine.price }}</span>
                 <span class="shic">市场价<span class="prices2">￥{{ medicine.price * 2 }}</span></span>
-                <span class="yis">已售6264件</span>
+                <span class="yis">剩余库存: {{ medicine.count }}</span>
               </div>
               <div class="a22">
                 <p></p>
@@ -46,7 +46,8 @@
               </div>
               <div class="a25">
                 <button class="a25color1" @click="addToCart">加入购物车</button>
-                <button class="a25color2" @click="pay">立即购买</button>
+                <button class="a25color2" @click="pay" v-if="medicine.count > 0">立即购买</button>
+                <el-button class="a25color3" type="info" disabled  v-else>暂无库存</el-button>
               </div>
             </div>
           </div>
@@ -73,6 +74,7 @@ export default {
   },
   mounted() {
     this.medicineId = localStorage.getItem('medicineId')
+    sessionStorage.getItem('userId')
     this.fetchMedicineDetails()
   },
   methods: {
@@ -91,7 +93,7 @@ export default {
     async addToCart() {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('medicineId', this.medicineId)
         params.append('count', this.count)
         await axios.post('http://localhost:8081/cart/addCart', params)
@@ -104,14 +106,21 @@ export default {
     async pay() {
       try {
         const params = new URLSearchParams()
-        params.append('userId', 1)
+        params.append('userId', sessionStorage.getItem('userId'))
         params.append('medicineId', this.medicineId)
         params.append('count', this.count)
         await axios.post('http://localhost:8081/detail/add', params)
+        await this.buy()
         alert('购买成功')
       } catch (error) {
         alert('购买失败')
       }
+    },
+    async buy() {
+      const params = new URLSearchParams()
+      params.append('medicineId', this.medicineId)
+      params.append('count', this.count)
+      await axios.put('http://localhost:8081/medicine/buy', params)
     }
   }
 }
@@ -246,5 +255,12 @@ iframe {
   font-size: 20px;
   font-weight: bolder;
   border: 1px #FF4F0D solid;
+}
+.a25 .a25color3 {
+  background-color: #8a8a8a;
+  color: white;
+  font-size: 20px;
+  font-weight: bolder;
+  border: 1px #797979 solid;
 }
 </style>

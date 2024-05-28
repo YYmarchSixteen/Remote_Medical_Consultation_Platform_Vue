@@ -49,10 +49,11 @@ export default {
   },
   mounted() {
     this.fetchCartData()
+    sessionStorage.getItem('userId')
   },
   methods: {
     fetchCartData() {
-      axios.get(`http://localhost:8081/detail/findById?userId=1`)
+      axios.get(`http://localhost:8081/detail/findById?userId=${sessionStorage.getItem('userId')}`)
         .then(response => {
           this.medicine = response.data.data
           console.log(this.medicine)

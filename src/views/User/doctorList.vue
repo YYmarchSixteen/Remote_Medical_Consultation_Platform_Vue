@@ -26,13 +26,10 @@
           <span v-else-if="scope.row.title === '4'">主任医师</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="270">
+      <el-table-column label="操作" width="200">
         <template #default="scope">
           <el-button type="primary" size="small" @click="reserveDoctor(scope.row)">
             点击预约
-          </el-button>
-          <el-button type="primary" size="small" @click="chat(scope.row)">
-            文字咨询
           </el-button>
           <el-button type="primary" size="small" @click="doctorInfo(scope.row)">
             查看详情
@@ -85,18 +82,6 @@ export default {
       localStorage.setItem('doctorId', doctor.doctorId)
       router.push('/user/doctorInfo')
     },
-    async chat(doctor) {
-      try {
-        const params = new URLSearchParams()
-        params.append('userId', 1)
-        params.append('doctorId', doctor.doctorId)
-        params.append('message', '我已向你发起文字咨询请求，请尽快回复')
-        await axios.post('http://localhost:8081/chat/userSend', params)
-        await router.push('/user/message')
-      } catch (error) {
-        alert('请稍后重试')
-      }
-    }
   }
 }
 </script>
