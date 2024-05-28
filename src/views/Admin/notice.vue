@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="scrollContainer"  style="max-height: 800px; overflow-y: auto;">
+  <div class="container" ref="scrollContainer" style="max-height: 800px; overflow-y: auto;">
     <h1>公告列表</h1>
     <el-button type="primary" @click="showDialog1();" size="small">添加公告</el-button>
     <br><br>
@@ -89,7 +89,7 @@ export default {
       addForm: {
         title: '',
         content: ''
-      },
+      }
     }
   },
   mounted() {
@@ -118,7 +118,7 @@ export default {
       try {
         await axios.put(`http://localhost:8081/notice/disabled?noticeId=${notice.noticeId}`)
         this.$message.success('当前公告已禁用')
-        this.fetchNotices()
+        window.location.reload()
       } catch (error) {
         console.error('Error disabling notice:', error)
       }
@@ -127,7 +127,7 @@ export default {
       try {
         await axios.put(`http://localhost:8081/notice/activate?noticeId=${notice.noticeId}`)
         this.$message.success('当前公告已激活')
-        this.fetchNotices()
+        window.location.reload()
       } catch (error) {
         console.error('Error activating notice:', error)
       }
@@ -147,7 +147,6 @@ export default {
         axios.put('http://localhost:8081/notice/update', params)
         this.$message.success('编辑成功')
         this.dialogVisible2 = false
-        await this.fetchNotices()
         window.location.reload()
       } catch (error) {
         console.error('Error adding Notice:', error)
@@ -162,7 +161,7 @@ export default {
         axios.post('http://localhost:8081/notice/add', params)
         this.$message.success('新增成功')
         this.dialogVisible1 = false
-        await this.fetchNotices()
+        window.location.reload()
       } catch (error) {
         console.error('Error adding Notice:', error)
       }
