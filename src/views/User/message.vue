@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     fetchDoctorList() {
-      axios.get(`http://localhost:8081/chat/userChatList?userId=1`)
+      axios.get(`http://localhost:8081/chat/userChatList?userId=${sessionStorage.getItem('userId')}`)
         .then(response => {
           this.doctorList = response.data.data
           if (this.doctorList.length > 0) {
@@ -93,7 +93,7 @@ export default {
     },
     fetchReserveList() {
       axios
-        .get(`http://localhost:8081/reserve/myReserve?userId=1`)
+        .get(`http://localhost:8081/reserve/myReserve?userId=${sessionStorage.getItem('userId')}`)
         .then((response) => {
           this.ReserveList = response.data.data
           if (this.ReserveList.length > 0) {
@@ -107,7 +107,7 @@ export default {
         })
     },
     fetchChatContent(doctorId) {
-      axios.get(`http://localhost:8081/chat/all?doctorId=${doctorId}&userId=1`)
+      axios.get(`http://localhost:8081/chat/all?doctorId=${doctorId}&userId=${sessionStorage.getItem('userId')}`)
         .then(response => {
           this.currentChat = response.data.data.map(message => {
             const formattedTime = new Date(message.sendTime).toLocaleString()
